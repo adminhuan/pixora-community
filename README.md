@@ -1,184 +1,186 @@
 <p align="center">
   <h1 align="center">Pixora Community</h1>
-  <p align="center">全程由 AI 开发的全栈编程社区 + UI 组件库平台</p>
+  <p align="center">A full-stack developer community + UI component library, entirely built by AI</p>
   <p align="center">
-    <a href="https://pixora.vip">社区论坛</a> |
-    <a href="https://ui.pixora.vip">UI 组件库</a> |
-    <a href="https://github.com/adminhuan/pixora-community/issues">反馈建议</a>
+    <a href="https://pixora.vip">Community Forum</a> |
+    <a href="https://ui.pixora.vip">UI Components</a> |
+    <a href="./README.zh-CN.md">中文文档</a> |
+    <a href="https://github.com/adminhuan/pixora-community/issues">Feedback</a>
   </p>
 </p>
 
 ---
 
-## 项目简介
+## About
 
-**Pixora** 是一个面向开发者的技术交流平台，包含两个核心产品：
+**Pixora** is a developer-oriented platform with two core products:
 
-- **[pixora.vip](https://pixora.vip)** - 编程社区论坛，支持发帖讨论、技术问答、博客写作、项目展示、实时私信等
-- **[ui.pixora.vip](https://ui.pixora.vip)** - UI 组件库，70+ 精美组件，在线实时预览，支持一键 Fork 和发布
+- **[pixora.vip](https://pixora.vip)** — Community forum with discussions, Q&A, blogs, project showcase, real-time messaging and more
+- **[ui.pixora.vip](https://ui.pixora.vip)** — UI component library with 70+ components, live preview, one-click fork and publishing
 
-整个项目从数据库设计、后端接口、前端页面到服务器部署，**全部由 AI 完成开发**。
+The entire project — database design, backend APIs, frontend pages, and server deployment — was **built entirely by AI**.
 
-## 技术栈
+## Tech Stack
 
-| 层级 | 技术 |
-|------|------|
-| **前端** | React 19 + TypeScript + Vite |
-| **后台管理** | React 19 + Ant Design |
-| **后端** | Node.js + Express + TypeScript |
-| **数据库** | PostgreSQL + Prisma ORM |
-| **实时通信** | Socket.IO (WebSocket) |
-| **认证** | JWT + GitHub OAuth 2.0 |
-| **部署** | Nginx + PM2 + Ubuntu |
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | React 19 + TypeScript + Vite |
+| **Admin Panel** | React 19 + Ant Design |
+| **Backend** | Node.js + Express + TypeScript |
+| **Database** | PostgreSQL + Prisma ORM |
+| **Real-time** | Socket.IO (WebSocket) |
+| **Auth** | JWT + GitHub OAuth 2.0 |
+| **Deployment** | Nginx + PM2 + Ubuntu |
 
-## 项目结构
+## Project Structure
 
 ```
 pixora-community/
-├── 前端/                  # 社区论坛前端
-│   └── app/               # React 应用 (port 3302)
-├── 组件广场/              # UI 组件库前端
-│   └── app/               # React 应用 (port 3303)
-├── 后台管理/              # 管理后台
-│   └── app/               # React + Ant Design 应用 (port 3301)
-├── 后端/
-│   └── server/            # Express API 服务 (port 3300)
-│       ├── prisma/        # 数据库模型 & 迁移
+├── frontend/                # Community forum frontend
+│   └── app/                 # React app (port 3302)
+├── component-plaza/         # UI component library frontend
+│   └── app/                 # React app (port 3303)
+├── admin/                   # Admin dashboard
+│   └── app/                 # React + Ant Design app (port 3301)
+├── backend/
+│   └── server/              # Express API server (port 3300)
+│       ├── prisma/          # Database models & migrations
 │       ├── src/
-│       │   ├── controllers/   # 路由控制器
-│       │   ├── services/      # 业务逻辑层
-│       │   ├── middleware/    # 中间件（认证/限流/CSRF）
-│       │   ├── routes/        # 路由定义
-│       │   └── utils/         # 工具函数
-│       └── .env.example       # 环境变量模板
-└── README.md
+│       │   ├── controllers/ # Route controllers
+│       │   ├── services/    # Business logic
+│       │   ├── middleware/  # Auth / rate limiting / CSRF
+│       │   ├── routes/      # Route definitions
+│       │   └── utils/       # Utility functions
+│       └── .env.example     # Environment variable template
+├── README.md                # English documentation
+└── README.zh-CN.md          # Chinese documentation
 ```
 
-## 功能特性
+## Features
 
-### 社区论坛 (pixora.vip)
+### Community Forum (pixora.vip)
 
-- **论坛讨论** - 发帖 / 回复 / 点赞 / 收藏 / 投票，支持 Markdown 编辑器
-- **技术问答** - 提问 / 回答 / 采纳最佳答案，帮助开发者解决问题
-- **技术博客** - 个人博客发布与阅读，支持富文本编辑
-- **项目展示** - 展示个人开源项目，支持 GitHub 仓库链接
-- **实时私信** - 基于 WebSocket 的实时聊天，消息即时送达
-- **消息通知** - 回复、点赞、关注等操作的实时提醒
-- **GitHub 登录** - 一键 OAuth 授权登录，无需注册
-- **排行榜 & 积分** - 活跃度排行，鼓励社区贡献
-- **AI 内容审核** - 敏感词过滤，保障社区环境
-- **暗色模式** - 支持明暗主题切换
+- **Forum** — Post / reply / like / bookmark / vote, Markdown editor support
+- **Q&A** — Ask questions, submit answers, accept best answers
+- **Blog** — Personal tech blog publishing with rich text editor
+- **Project Showcase** — Share open source projects with GitHub repo links
+- **Real-time Messaging** — WebSocket-powered instant private messaging
+- **Notifications** — Real-time alerts for replies, likes, follows and more
+- **GitHub Login** — One-click OAuth login, no registration needed
+- **Leaderboard & Points** — Activity rankings to encourage community contribution
+- **AI Moderation** — Sensitive word filtering to maintain a healthy community
+- **Dark Mode** — Light and dark theme switching
 
-### UI 组件库 (ui.pixora.vip)
+### UI Component Library (ui.pixora.vip)
 
-- **70+ 精美组件** - 按钮、卡片、加载器、输入框、开关、表单、弹窗等全品类覆盖
-- **在线实时预览** - 无需下载，浏览器内直接查看组件效果
-- **一键 Fork** - 看到喜欢的组件可以直接 Fork 到自己名下修改
-- **多框架支持** - CSS / Tailwind / React / Vue / Svelte 五种框架
-- **版本管理** - 组件迭代历史可追溯
-- **点赞 & 收藏** - 发现和收藏优质组件
-- **分类浏览** - 按钮、卡片、加载器、输入框、开关、复选框、表单、提示、弹窗、导航栏、页脚、背景图案等分类
+- **70+ Components** — Buttons, cards, loaders, inputs, toggles, forms, modals and more
+- **Live Preview** — View component effects directly in the browser
+- **One-click Fork** — Fork any component to your own account and modify it
+- **Multi-framework** — CSS / Tailwind / React / Vue / Svelte
+- **Version History** — Track component iteration history
+- **Like & Bookmark** — Discover and save quality components
+- **Category Browsing** — Buttons, cards, loaders, inputs, toggles, checkboxes, forms, alerts, modals, navbars, footers, patterns and more
 
-### 后台管理
+### Admin Dashboard
 
-- **数据仪表盘** - 用户增长、内容发布、访问量等核心数据可视化
-- **用户管理** - 用户列表、封禁 / 解封、角色分配
-- **内容审核** - 帖子 / 评论 / 组件审核，敏感内容过滤
-- **站点设置** - Logo、Favicon、网站名称、联系方式等均可后台动态配置
-- **IP 管理** - 访问记录与 IP 封禁
+- **Analytics** — User growth, content publishing, page views and core metrics
+- **User Management** — User list, ban/unban, role assignment
+- **Content Moderation** — Review posts, comments and components
+- **Site Settings** — Dynamically configure logo, favicon, site name, contact info and more
+- **IP Management** — Access logs and IP blocking
 
-## 快速开始
+## Getting Started
 
-### 环境要求
+### Prerequisites
 
 - Node.js >= 18
 - PostgreSQL >= 14
 - npm / pnpm / yarn
 
-### 1. 克隆项目
+### 1. Clone
 
 ```bash
 git clone https://github.com/adminhuan/pixora-community.git
 cd pixora-community
 ```
 
-### 2. 启动后端
+### 2. Backend
 
 ```bash
-cd 后端/server
+cd backend/server
 
-# 复制环境变量模板并填入配置
+# Copy and configure environment variables
 cp .env.example .env
 
-# 安装依赖
+# Install dependencies
 npm install
 
-# 生成 Prisma Client 并同步数据库
+# Generate Prisma Client and sync database
 npx prisma generate
 npx prisma db push
 
-# 启动开发服务器
+# Start development server
 npm run dev
 ```
 
-### 3. 启动社区前端
+### 3. Community Frontend
 
 ```bash
-cd 前端/app
+cd frontend/app
 npm install
 npm run dev
-# 默认运行在 http://localhost:3302
+# Runs on http://localhost:3302
 ```
 
-### 4. 启动组件广场
+### 4. Component Library
 
 ```bash
-cd 组件广场/app
+cd component-plaza/app
 npm install
 npm run dev
-# 默认运行在 http://localhost:3303
+# Runs on http://localhost:3303
 ```
 
-### 5. 启动后台管理（可选）
+### 5. Admin Panel (Optional)
 
 ```bash
-cd 后台管理/app
+cd admin/app
 npm install
 npm run dev
-# 默认运行在 http://localhost:3301
+# Runs on http://localhost:3301
 ```
 
-## 环境变量说明
+## Environment Variables
 
-复制 `后端/server/.env.example` 为 `.env` 并配置以下关键变量：
+Copy `backend/server/.env.example` to `.env` and configure:
 
-| 变量 | 必填 | 说明 |
-|------|------|------|
-| `DATABASE_URL` | 是 | PostgreSQL 连接字符串 |
-| `JWT_ACCESS_SECRET` | 是 | JWT Access Token 签名密钥（随机字符串） |
-| `JWT_REFRESH_SECRET` | 是 | JWT Refresh Token 签名密钥（随机字符串） |
-| `CORS_ORIGINS` | 是 | 允许跨域的前端地址，逗号分隔 |
-| `BASE_URL` | 是 | 后端服务的公开访问地址 |
-| `GITHUB_CLIENT_ID` | 否 | GitHub OAuth App Client ID |
-| `GITHUB_CLIENT_SECRET` | 否 | GitHub OAuth App Client Secret |
-| `SMTP_HOST` | 否 | 邮件服务器地址（用于发送验证邮件） |
-| `SMTP_USER` | 否 | 邮件服务器账号 |
-| `SMTP_PASS` | 否 | 邮件服务器密码 |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes | PostgreSQL connection string |
+| `JWT_ACCESS_SECRET` | Yes | JWT access token signing key |
+| `JWT_REFRESH_SECRET` | Yes | JWT refresh token signing key |
+| `CORS_ORIGINS` | Yes | Allowed frontend origins, comma-separated |
+| `BASE_URL` | Yes | Public backend URL |
+| `GITHUB_CLIENT_ID` | No | GitHub OAuth App Client ID |
+| `GITHUB_CLIENT_SECRET` | No | GitHub OAuth App Client Secret |
+| `SMTP_HOST` | No | Mail server host |
+| `SMTP_USER` | No | Mail server username |
+| `SMTP_PASS` | No | Mail server password |
 
-> 提示：可以使用 `openssl rand -hex 48` 生成 JWT 密钥
+> Tip: Generate JWT secrets with `openssl rand -hex 48`
 
-## 生产环境部署
+## Production Deployment
 
-### Nginx 反向代理参考
+### Nginx Reverse Proxy
 
 ```nginx
-# 社区论坛
+# Community Forum
 server {
     listen 80;
     server_name pixora.vip;
 
     location / {
-        root /var/www/pixora/前端;
+        root /var/www/pixora/frontend;
         try_files $uri $uri/ /index.html;
     }
 
@@ -196,13 +198,13 @@ server {
     }
 }
 
-# 组件广场
+# Component Library
 server {
     listen 80;
     server_name ui.pixora.vip;
 
     location / {
-        root /var/www/pixora/组件广场;
+        root /var/www/pixora/component-plaza;
         try_files $uri $uri/ /index.html;
     }
 
@@ -212,35 +214,31 @@ server {
 }
 ```
 
-### PM2 启动后端
+### PM2
 
 ```bash
-cd 后端/server
+cd backend/server
 npm run build
 pm2 start dist/server.js --name pixora-server
 ```
 
-## 在线体验
+## Live Demo
 
-| 服务 | 地址 |
-|------|------|
-| 社区论坛 | [https://pixora.vip](https://pixora.vip) |
-| UI 组件库 | [https://ui.pixora.vip](https://ui.pixora.vip) |
+| Service | URL |
+|---------|-----|
+| Community Forum | [https://pixora.vip](https://pixora.vip) |
+| UI Component Library | [https://ui.pixora.vip](https://ui.pixora.vip) |
 
-## 参与贡献
+## Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Contributions are welcome! Feel free to open issues and pull requests.
 
-1. Fork 本仓库
-2. 创建你的特性分支 (`git checkout -b feature/xxx`)
-3. 提交你的修改 (`git commit -m 'Add xxx'`)
-4. 推送到分支 (`git push origin feature/xxx`)
-5. 创建 Pull Request
+1. Fork this repository
+2. Create your feature branch (`git checkout -b feature/xxx`)
+3. Commit your changes (`git commit -m 'Add xxx'`)
+4. Push to the branch (`git push origin feature/xxx`)
+5. Open a Pull Request
 
-## 开源协议
+## License
 
-本项目基于 [MIT License](./LICENSE) 开源。
-
-## 致谢
-
-本项目全程由 AI 辅助开发完成，感谢开源社区的各种优秀工具和框架。
+This project is licensed under the [MIT License](./LICENSE).
