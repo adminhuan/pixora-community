@@ -1,0 +1,34 @@
+import { Router } from 'express';
+import { adminAuth } from '../../middleware/adminAuth';
+import { auth } from '../../middleware/auth';
+import { operationLog } from '../../middleware/operationLog';
+import { adminAnalyticsRoutes } from './analytics.routes';
+import { adminAuditRoutes } from './audit.routes';
+import { adminContentRoutes } from './content.routes';
+import { adminDashboardRoutes } from './dashboard.routes';
+import { adminLogRoutes } from './log.routes';
+import { adminNotificationRoutes } from './notification.routes';
+import { adminOperationRoutes } from './operation.routes';
+import { adminPollRoutes } from './poll.routes';
+import { adminReportRoutes } from './report.routes';
+import { adminSettingsRoutes } from './settings.routes';
+import { adminSnippetRoutes } from './snippet.routes';
+import { adminTagRoutes } from './tag.routes';
+import { adminUserRoutes } from './user.routes';
+
+export const adminRoutes = Router();
+
+adminRoutes.use(auth, adminAuth, operationLog);
+adminRoutes.use(adminDashboardRoutes);
+adminRoutes.use(adminUserRoutes);
+adminRoutes.use(adminAuditRoutes);
+adminRoutes.use(adminContentRoutes);
+adminRoutes.use(adminReportRoutes);
+adminRoutes.use(adminTagRoutes);
+adminRoutes.use(adminOperationRoutes);
+adminRoutes.use(adminPollRoutes);
+adminRoutes.use(adminAnalyticsRoutes);
+adminRoutes.use(adminSettingsRoutes);
+adminRoutes.use(adminSnippetRoutes);
+adminRoutes.use(adminLogRoutes);
+adminRoutes.use(adminNotificationRoutes);

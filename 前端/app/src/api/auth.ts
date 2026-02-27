@@ -1,0 +1,32 @@
+import { request } from './request';
+
+export interface LoginPayload {
+  identifier: string;
+  password: string;
+  captchaId?: string;
+  captchaCode?: string;
+  remember?: boolean;
+}
+
+export const authApi = {
+  register: (payload: Record<string, unknown>) => request.post('/auth/register', payload),
+  login: (payload: LoginPayload) => request.post('/auth/login', payload),
+  logout: () => request.post('/auth/logout'),
+  refreshToken: () => request.post('/auth/refresh-token'),
+  forgotPassword: (payload: { email: string }) => request.post('/auth/forgot-password', payload),
+  resetPassword: (payload: { token: string; password: string }) => request.post('/auth/reset-password', payload),
+  changePassword: (payload: { oldPassword: string; newPassword: string }) => request.put('/auth/change-password', payload),
+  sendEmailCode: (payload: { email: string; captchaId: string; captchaCode: string }) =>
+    request.post('/auth/send-email-code', payload),
+  sendSmsCode: (payload: { phone: string }) => request.post('/auth/send-sms-code', payload),
+  getCaptcha: () => request.get('/auth/captcha'),
+  checkUsername: (username: string) => request.get('/auth/check-username', { params: { username } }),
+  checkEmail: (email: string) => request.get('/auth/check-email', { params: { email } }),
+  getGithubLoginRedirect: (redirect?: string) =>
+    request.get('/auth/github', { params: redirect ? { redirect } : undefined }),
+  getWechatLoginRedirect: (redirect?: string) =>
+    request.get('/auth/wechat', { params: redirect ? { redirect } : undefined }),
+  exchangeToken: (token: string) => request.post('/auth/exchange-token', { token }),
+  githubLoginUrl: '/api/v1/auth/github',
+  wechatLoginUrl: '/api/v1/auth/wechat'
+};

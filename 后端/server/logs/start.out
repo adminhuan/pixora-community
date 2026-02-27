@@ -1,0 +1,8 @@
+
+> ai-programming-community-server@1.0.0 start
+> node dist/server.js
+
+2026-02-13 09:02:03 [[32minfo[39m] Redis connected
+2026-02-13 09:02:03 [[32minfo[39m] PostgreSQL connected
+2026-02-13 09:02:03 [[32minfo[39m] Server started at http://localhost:3300
+2026-02-13 09:02:03 [[32minfo[39m] GET /api/v1/health 200 3.403 ms - 165

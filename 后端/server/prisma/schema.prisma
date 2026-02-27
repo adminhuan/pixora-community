@@ -1,0 +1,889 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  moderator
+  admin
+}
+
+enum UserStatus {
+  active
+  muted
+  banned
+}
+
+enum PostStatus {
+  draft
+  published
+  deleted
+  pending
+}
+
+enum QuestionStatus {
+  open
+  closed
+  duplicate
+  pending
+}
+
+enum ProjectStatus {
+  developing
+  completed
+  maintained
+  deprecated
+}
+
+enum BlogStatus {
+  draft
+  published
+  deleted
+  pending
+}
+
+enum CommentStatus {
+  active
+  deleted
+  hidden
+  pending
+}
+
+enum AnswerStatus {
+  active
+  deleted
+  pending
+}
+
+enum ContentType {
+  post
+  blog
+  project
+  snippet
+  question
+  answer
+  comment
+}
+
+enum VoteContentType {
+  question
+  answer
+}
+
+enum NotificationType {
+  comment
+  reply
+  like
+  follow
+  answer
+  accept
+  system
+  private_message
+}
+
+enum ReportReason {
+  spam
+  abuse
+  inappropriate
+  copyright
+  other
+}
+
+enum ReportStatus {
+  pending
+  resolved
+  rejected
+}
+
+enum IpAccessResult {
+  allowed
+  blocked
+}
+
+enum IpAccessRule {
+  whitelist
+  blacklist
+}
+
+enum PointsType {
+  earn
+  spend
+}
+
+enum CategoryType {
+  post
+  blog
+  project
+}
+
+enum CategoryApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum SnippetVisibility {
+  public
+  private
+}
+
+model User {
+  id                   String             @id @default(cuid())
+  username             String             @unique
+  email                String             @unique
+  phone                String?
+  password             String
+  avatar               String?
+  coverImage           String?
+  nickname             String?
+  bio                  String?
+  signature            String?
+  role                 UserRole           @default(user)
+  status               UserStatus         @default(active)
+  mutedUntil           DateTime?
+  bannedUntil          DateTime?
+  position             String?
+  company              String?
+  city                 String?
+  website              String?
+  github               String?
+  points               Int                @default(0)
+  level                Int                @default(1)
+  followersCount       Int                @default(0)
+  followingCount       Int                @default(0)
+  postsCount           Int                @default(0)
+  notificationSettings Json?
+  lastLoginAt          DateTime?
+  lastLoginIp          String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  oauthProviders      OAuthProvider[]
+  posts               Post[]
+  blogs               Blog[]
+  projects            Project[]
+  snippets            CodeSnippet[]
+  questions           Question[]
+  answers             Answer[]
+  comments            Comment[]
+  likes               Like[]
+  favorites           Favorite[]
+  favoriteFolders     FavoriteFolder[]
+  votes               Vote[]
+  following           Follow[]           @relation("follower")
+  followers           Follow[]           @relation("following")
+  series              Series[]
+  pointsLogs          PointsLog[]
+  achievements        UserAchievement[]
+  notifications       Notification[]     @relation("recipient")
+  sentNotifications   Notification[]     @relation("sender")
+  privateConversationAsA PrivateConversation[] @relation("privateConversationUserA")
+  privateConversationAsB PrivateConversation[] @relation("privateConversationUserB")
+  privateSentMessages PrivateMessage[] @relation("privateMessageSender")
+  privateReceivedMessages PrivateMessage[] @relation("privateMessageReceiver")
+  blockedUsers          UserBlock[]            @relation("userBlockBlocker")
+  blockedByUsers        UserBlock[]            @relation("userBlockBlocked")
+  reports               Report[]               @relation("reporter")
+  reportedAgainst       Report[]               @relation("targetAuthor")
+  handledReports        Report[]               @relation("handler")
+  tagFollows            TagFollow[]
+  projectRatings        ProjectRating[]
+  categoryApplications  CategoryApplication[]  @relation("categoryApplicant")
+  reviewedApplications  CategoryApplication[]  @relation("categoryReviewer")
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OAuthProvider {
+  id         String @id @default(cuid())
+  provider   String
+  providerId String
+  userId     String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@index([userId])
+}
+
+model Post {
+  id            String     @id @default(cuid())
+  title         String
+  content       String
+  contentHtml   String?
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id])
+  categoryId    String?
+  category      Category?  @relation(fields: [categoryId], references: [id])
+  status        PostStatus @default(draft)
+  isPinned      Boolean    @default(false)
+  isFeatured    Boolean    @default(false)
+  isLocked      Boolean    @default(false)
+  viewCount     Int        @default(0)
+  likeCount     Int        @default(0)
+  favoriteCount Int        @default(0)
+  commentCount  Int        @default(0)
+  lastCommentAt DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  tags PostTag[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([isPinned])
+  @@index([createdAt])
+  @@index([likeCount])
+}
+
+model PostTag {
+  postId String
+  tagId  String
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+}
+
+model CodeSnippet {
+  id            String            @id @default(cuid())
+  title         String
+  description   String?
+  authorId      String
+  author        User              @relation(fields: [authorId], references: [id])
+  visibility    SnippetVisibility @default(public)
+  type          String            @default("component")
+  category      String?
+  framework     String            @default("css")
+  likeCount     Int               @default(0)
+  forkCount     Int               @default(0)
+  favoriteCount Int               @default(0)
+  commentCount  Int               @default(0)
+  viewCount     Int               @default(0)
+  isRecommended Boolean           @default(false)
+  isFeatured    Boolean           @default(false)
+  forkedFromId  String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  files    SnippetFile[]
+  versions SnippetVersion[]
+  tags     SnippetTag[]
+
+  @@index([authorId])
+  @@index([visibility])
+  @@index([type])
+  @@index([category])
+  @@index([framework])
+  @@index([viewCount])
+  @@index([isRecommended])
+  @@index([isFeatured])
+  @@index([createdAt])
+}
+
+model SnippetFile {
+  id        String      @id @default(cuid())
+  filename  String
+  language  String
+  content   String
+  snippetId String
+  snippet   CodeSnippet @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+
+  @@index([snippetId])
+}
+
+model SnippetVersion {
+  id        String      @id @default(cuid())
+  message   String?
+  files     Json
+  snippetId String
+  snippet   CodeSnippet @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@index([snippetId])
+}
+
+model SnippetTag {
+  snippetId String
+  tagId     String
+  snippet   CodeSnippet @relation(fields: [snippetId], references: [id], onDelete: Cascade)
+  tag       Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([snippetId, tagId])
+}
+
+model Question {
+  id               String         @id @default(cuid())
+  title            String
+  content          String
+  contentHtml      String?
+  authorId         String
+  author           User           @relation(fields: [authorId], references: [id])
+  status           QuestionStatus @default(open)
+  isSolved         Boolean        @default(false)
+  acceptedAnswerId String?        @unique
+  acceptedAnswer   Answer?        @relation("acceptedAnswer", fields: [acceptedAnswerId], references: [id])
+  bounty           Int            @default(0)
+  bountyExpiresAt  DateTime?
+  viewCount        Int            @default(0)
+  voteCount        Int            @default(0)
+  answerCount      Int            @default(0)
+  duplicateOfId    String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  answers Answer[]      @relation("questionAnswers")
+  tags    QuestionTag[]
+
+  @@index([authorId])
+  @@index([status])
+  @@index([isSolved])
+  @@index([bounty])
+  @@index([createdAt])
+  @@index([voteCount])
+}
+
+model QuestionTag {
+  questionId String
+  tagId      String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, tagId])
+}
+
+model Answer {
+  id           String       @id @default(cuid())
+  content      String
+  contentHtml  String?
+  authorId     String
+  author       User         @relation(fields: [authorId], references: [id])
+  questionId   String
+  question     Question     @relation("questionAnswers", fields: [questionId], references: [id])
+  isAccepted   Boolean      @default(false)
+  status       AnswerStatus @default(active)
+  voteCount    Int          @default(0)
+  commentCount Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  acceptedFor Question? @relation("acceptedAnswer")
+
+  @@index([questionId])
+  @@index([authorId])
+  @@index([isAccepted])
+  @@index([status])
+  @@index([voteCount])
+  @@index([createdAt])
+}
+
+model Project {
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  content       String?
+  contentHtml   String?
+  coverImage    String?
+  screenshots   String[]      @default([])
+  authorId      String
+  author        User          @relation(fields: [authorId], references: [id])
+  categoryId    String?
+  category      Category?     @relation(fields: [categoryId], references: [id])
+  techStack     String[]      @default([])
+  demoUrl       String?
+  sourceUrl     String?
+  status        ProjectStatus @default(developing)
+  likeCount     Int           @default(0)
+  favoriteCount Int           @default(0)
+  commentCount  Int           @default(0)
+  ratingAvg     Float         @default(0)
+  ratingCount   Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  ratings       ProjectRating[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([ratingAvg])
+  @@index([createdAt])
+}
+
+model ProjectRating {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  score     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Blog {
+  id            String     @id @default(cuid())
+  title         String
+  content       String
+  contentHtml   String?
+  summary       String?
+  coverImage    String?
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id])
+  categoryId    String?
+  category      Category?  @relation(fields: [categoryId], references: [id])
+  seriesId      String?
+  series        Series?    @relation(fields: [seriesId], references: [id])
+  seriesOrder   Int?
+  status        BlogStatus @default(draft)
+  isRecommended Boolean    @default(false)
+  isBanner      Boolean    @default(false)
+  viewCount     Int        @default(0)
+  likeCount     Int        @default(0)
+  favoriteCount Int        @default(0)
+  commentCount  Int        @default(0)
+  readingTime   Int?
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  tags BlogTag[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([seriesId])
+  @@index([status])
+  @@index([isRecommended])
+  @@index([publishedAt])
+}
+
+model BlogTag {
+  blogId String
+  tagId  String
+  blog   Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, tagId])
+}
+
+model Comment {
+  id          String        @id @default(cuid())
+  content     String
+  contentHtml String?
+  authorId    String
+  author      User          @relation(fields: [authorId], references: [id])
+  targetType  ContentType
+  targetId    String
+  parentId    String?
+  rootId      String?
+  replyToId   String?
+  likeCount   Int           @default(0)
+  replyCount  Int           @default(0)
+  isPinned    Boolean       @default(false)
+  status      CommentStatus @default(active)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([targetType, targetId])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([rootId])
+  @@index([createdAt])
+}
+
+model Tag {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  slug           String   @unique
+  description    String?
+  icon           String?
+  aliases        String[] @default([])
+  usageCount     Int      @default(0)
+  followersCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  posts     PostTag[]
+  blogs     BlogTag[]
+  snippets  SnippetTag[]
+  questions QuestionTag[]
+  follows   TagFollow[]
+
+  @@index([usageCount])
+}
+
+model Category {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  description String?
+  icon        String?
+  parentId    String?
+  order       Int          @default(0)
+  type        CategoryType
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  posts    Post[]
+  blogs    Blog[]
+  projects Project[]
+
+  @@index([parentId])
+  @@index([type])
+  @@index([order])
+  @@index([isActive])
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  recipient   User             @relation("recipient", fields: [recipientId], references: [id])
+  senderId    String?
+  sender      User?            @relation("sender", fields: [senderId], references: [id])
+  type        NotificationType
+  targetType  String?
+  targetId    String?
+  content     String?
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  @@index([recipientId, isRead])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model PrivateConversation {
+  id                 String   @id @default(cuid())
+  pairKey            String   @unique
+  userAId            String
+  userA              User     @relation("privateConversationUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId            String
+  userB              User     @relation("privateConversationUserB", fields: [userBId], references: [id], onDelete: Cascade)
+  lastMessageContent String?
+  lastMessageAt      DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  messages PrivateMessage[]
+
+  @@index([userAId])
+  @@index([userBId])
+  @@index([lastMessageAt])
+}
+
+model PrivateMessage {
+  id             String              @id @default(cuid())
+  conversationId String
+  conversation   PrivateConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User                @relation("privateMessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId     String
+  receiver       User                @relation("privateMessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  content        String
+  attachments    Json?
+  isRead         Boolean             @default(false)
+  readAt         DateTime?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([receiverId, isRead, createdAt])
+  @@index([senderId, createdAt])
+}
+
+model UserBlock {
+  id        String   @id @default(cuid())
+  blockerId String
+  blocker   User     @relation("userBlockBlocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blockedId String
+  blocked   User     @relation("userBlockBlocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  reason    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId, createdAt])
+  @@index([blockedId, createdAt])
+}
+
+model Like {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id])
+  targetType ContentType
+  targetId   String
+  createdAt  DateTime    @default(now())
+
+  @@unique([userId, targetType, targetId])
+}
+
+model Favorite {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id])
+  targetType ContentType
+  targetId   String
+  folderId   String?
+  folder     FavoriteFolder? @relation(fields: [folderId], references: [id])
+  createdAt  DateTime        @default(now())
+
+  @@unique([userId, targetType, targetId])
+}
+
+model FavoriteFolder {
+  id        String     @id @default(cuid())
+  name      String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  favorites Favorite[]
+
+  @@index([userId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  follower    User     @relation("follower", fields: [followerId], references: [id])
+  followingId String
+  following   User     @relation("following", fields: [followingId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+model Vote {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id])
+  targetType VoteContentType
+  targetId   String
+  value      Int
+  createdAt  DateTime        @default(now())
+
+  @@unique([userId, targetType, targetId])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  reporterId     String
+  reporter       User         @relation("reporter", fields: [reporterId], references: [id])
+  targetType     String
+  targetId       String
+  targetAuthorId String?
+  targetAuthor   User?        @relation("targetAuthor", fields: [targetAuthorId], references: [id])
+  reason         ReportReason
+  description    String?
+  status         ReportStatus @default(pending)
+  handledById    String?
+  handledBy      User?        @relation("handler", fields: [handledById], references: [id])
+  handleResult   String?
+  handledAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([status])
+  @@index([reporterId])
+  @@index([targetAuthorId])
+  @@index([createdAt])
+}
+
+model Series {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  coverImage     String?
+  authorId       String
+  author         User     @relation(fields: [authorId], references: [id])
+  articleCount   Int      @default(0)
+  followersCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  blogs Blog[]
+
+  @@index([authorId])
+}
+
+model PointsLog {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  type        PointsType
+  action      String
+  points      Int
+  balance     Int
+  description String?
+  createdAt   DateTime   @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Achievement {
+  id             String            @id @default(cuid())
+  name           String            @unique
+  description    String?
+  icon           String?
+  condition      String?
+  conditionType  String?
+  conditionValue Int?
+
+  users UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  unlockedAt    DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+}
+
+
+
+model TagFollow {
+  id        String   @id @default(cuid())
+  tagId     String
+  userId    String
+  createdAt DateTime @default(now())
+
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tagId])
+  @@index([tagId])
+  @@index([userId])
+}
+
+model CategoryApplication {
+  id            String                    @id @default(cuid())
+  name          String
+  slug          String
+  type          CategoryType
+  reason        String?
+  applicantId   String
+  applicantName String
+  status        CategoryApplicationStatus @default(pending)
+  reviewComment String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  applicant User  @relation("categoryApplicant", fields: [applicantId], references: [id], onDelete: Cascade)
+  reviewer  User? @relation("categoryReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([applicantId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  group     String   @unique
+  payload   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminOperationResource {
+  id        String   @id @default(cuid())
+  resource  String
+  payload   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resource])
+  @@index([resource, createdAt])
+}
+
+model IpBlacklist {
+  id        String   @id @default(cuid())
+  ip        String   @unique
+  reason    String?
+  createdBy String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model IpWhitelist {
+  id        String   @id @default(cuid())
+  ip        String   @unique
+  reason    String?
+  createdBy String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model AdminOperationLog {
+  id         String   @id @default(cuid())
+  method     String
+  path       String
+  ip         String?
+  userAgent  String?
+  userId     String?
+  role       String?
+  statusCode Int
+  durationMs Int
+  requestId  String?
+  body       Json?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId])
+  @@index([path])
+}
+
+model IpAccessLog {
+  id         String         @id @default(cuid())
+  ip         String?
+  method     String
+  path       String
+  statusCode Int
+  result     IpAccessResult
+  rule       IpAccessRule
+  reason     String?
+  userId     String?
+  requestId  String?
+  userAgent  String?
+  createdAt  DateTime       @default(now())
+
+  @@index([createdAt])
+  @@index([ip, createdAt])
+  @@index([result, rule, createdAt])
+}
+
+model ContentAuditLog {
+  id          String   @id @default(cuid())
+  contentType String
+  contentId   String
+  authorId    String?
+  action      String
+  reason      String?
+  operatorId  String?
+  aiResponse  Json?
+  createdAt   DateTime @default(now())
+
+  @@index([contentType, contentId])
+  @@index([authorId])
+  @@index([createdAt])
+}

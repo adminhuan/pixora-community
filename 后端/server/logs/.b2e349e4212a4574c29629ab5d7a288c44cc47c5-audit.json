@@ -1,0 +1,35 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/.b2e349e4212a4574c29629ab5d7a288c44cc47c5-audit.json",
+    "files": [
+        {
+            "date": 1770718540146,
+            "name": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/error-2026-02-10.log",
+            "hash": "b83812d98b7cc5346e093c55b2651cb01d1336ab993799f6c0d3cc2bf07c4ad2"
+        },
+        {
+            "date": 1770780450773,
+            "name": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/error-2026-02-11.log",
+            "hash": "737f0b10e9d38f4759f86d50dd79d3deb1b8582dd10d60efd69046fc30536159"
+        },
+        {
+            "date": 1770851928778,
+            "name": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/error-2026-02-12.log",
+            "hash": "8470faabfcddfba469e79bd32a5830a3db8f688b63b81e9e2432fc9d9b1516ad"
+        },
+        {
+            "date": 1770937534967,
+            "name": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/error-2026-02-13.log",
+            "hash": "1eb0041e6ef9f71e0ab4bd3e47397ccfa5a789dda18a875f8de03a6dbaa9ed55"
+        },
+        {
+            "date": 1771038172052,
+            "name": "/Users/huishoubao/Desktop/ai编程社区/后端/server/logs/error-2026-02-14.log",
+            "hash": "a312ae4659dfd6de8bc3d7dbdb33b706cee45911755ea324743e4686b09a7462"
+        }
+    ],
+    "hashType": "sha256"
+}
