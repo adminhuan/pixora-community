@@ -49,3 +49,74 @@ seed-*.cjs
 # Misc
 *.tgz
 coverage/
+
+# ===== BEGIN backup-to-github (自动添加) =====
+# 依赖与构建产物
+node_modules/
+bower_components/
+dist/
+build/
+unpackage/
+.nuxt/
+.output/
+.next/
+vendor/
+target/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.gradle/
+Pods/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# 日志与临时
+*.log
+logs/
+tmp/
+temp/
+.cache/
+
+# 密钥与凭证（绝不上传）
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# 大二进制/归档（GitHub 单文件上限 100MB）
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.jar
+*.war
+*.dmg
+*.exe
+*.msi
+*.apk
+*.ipa
+*.mdf
+*.MDF
+*.ldf
+*.LDF
+*.sqlite
+*.db
+*.mp4
+*.mov
+*.avi
+# ===== END backup-to-github =====
